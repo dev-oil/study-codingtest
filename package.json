@@ -12,5 +12,9 @@
     "@biomejs/biome": "^1.6.3",
     "tsx": "^4.7.1",
     "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.17.14",
+    "lodash": "^4.17.21"
   }
 }
