@@ -2,8 +2,7 @@
 
 // 풀이
 function solution2(intStrs: string[], k: number, s: number, l:number): number[] {
-  const newIntStrs = intStrs.map((num) => parseInt(num.slice(s, s + l)));
-  return newIntStrs.filter((num) => num > k);
+  return intStrs.map((num) => num.slice(s, s + l)).map((x) => parseInt(x, 10)).filter((num) => num > k)
 }
 
 // 이전 풀이
