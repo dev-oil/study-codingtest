@@ -5,7 +5,11 @@ function solution(num_list: number[]): number {
   let even = 0;
 
   num_list.forEach((v, i) => {
-    i % 2 === 0 ? odd += v : even += v;
+    if (i % 2 === 0) {
+      odd += v;
+    } else {
+      even += v;
+    }
   })
 
   return odd > even ? odd : even;
