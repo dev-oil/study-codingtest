@@ -8,7 +8,7 @@ const x = xs.reduce((x, y) => {
 })
 
 // console.log(xs);
-console.log(zs); // [ 1, 3, 6, 10 ] 이 나오는 이유는?
+// console.log(zs); // [ 1, 3, 6, 10 ] 이 나오는 이유는?
 // 💡 헷갈렸던 부분 -> 초깃값 설정 관련
 // reduce에서 초깃값을 설정해주지 않는다면 자동으로 해당 배열의 첫번째 값으로 초깃값을 설정한다.
 // 그리고 배열의 두번째 값을 y로 시작하게 된다.
@@ -39,10 +39,37 @@ function filter(xs, f) {
   }, [])
 }
 
+// acc를 건드리지 않고 구현하기 > 의도) 새 배열 반환
+function filter2(xs, f) {
+return xs.reduce((acc, curr, index, arr) => {
+  return f(curr, index, arr) // f 함수 true / false에 따라서...
+    ? [...acc, curr]  // 조건을 만족하면 (true 라면) 새로운 배열 반환
+    : acc // 조건을 만족하지 않으면 (false 라면) 기존 배열 유지
+  }, []            
+);
+}
+
+// only JS
+// function filterForMe(arr, callback) {
+//   const result = [];
+
+//   for (let i = 0; i < arr.length; i++) {
+//     if (callback(arr[i], i, arr)) {
+//       result.push(arr[i]);
+//     }
+//   }
+
+//   return result;
+// }
+
 // test 
 const numbers = [1, 2, 3, 4, 5];
-const result = filter(numbers, num => num > 2);
+let result = filter(numbers, num => num > 2);
 console.log(result); // [3, 4, 5]
+
+result = filter2(numbers, num => num > 2);
+console.log(result);
+
 
 // reduce map
 function map(xs, f) {
@@ -52,9 +79,19 @@ function map(xs, f) {
   }, [])
 }
 
+// acc를 건드리지 않고 구현 > 의도) 새 배열 반환
+function map2(xs, f) {
+  return xs.reduce((acc, curr, index, arr) => {
+    return [...acc, f(curr, index, arr)]
+  }, [])
+}
+
 // test
-const result2 = map(numbers, (x) => String(x));
-console.log(result2); // [ '1', '2', '3', '4', '5' ]
+let result2 = map(numbers, (num) => num * num);
+console.log(result2); // [ 1, 4, 9, 16, 25 ]
+
+result2 = map2(numbers, (num) => num * num);
+console.log(result2); // [ 1, 4, 9, 16, 25 ]
 
 // reduce를 쓰기 좋을 때
 // [1,2,3,4,5].reduce((x,y) => x + y)
