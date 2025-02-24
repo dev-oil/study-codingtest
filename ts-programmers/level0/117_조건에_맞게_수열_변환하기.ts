@@ -9,7 +9,7 @@ function solution2(arr: number[], k: number): number[] {
 
 // 첫번째 풀이
 function solution(arr: number[], k: number): number[] {
-  return arr.map((v) => (k % 2 === 1 ? v * k : v + k));
+  return arr.map((v) => (k % 2 ? v * k : v + k));
 }
 
 // test
