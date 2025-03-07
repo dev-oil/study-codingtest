@@ -1,5 +1,6 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/12926
 
+// 💡 중복 줄이기
 function solution(s: string, n: number): string {
   let answer: string = "";
 
@@ -11,13 +12,11 @@ function solution(s: string, n: number): string {
       answer += " ";
       continue;
     }
+
     let code = v.charCodeAt(0);
 
-    // 중복 줄이는 방법...이 생각이 나질 않는..
-    if (code <= 90) {
-      code = code + n > 90 ? code - 26 : code;
-    } else {
-      code = code + n > 122 ? code - 26 : code;
+    if ((code <= 90 && code + n > 90) || (code > 90 && code + n > 122)) {
+      code -= 26;
     }
 
     answer += String.fromCharCode(code + n);
@@ -27,6 +26,6 @@ function solution(s: string, n: number): string {
 }
 
 // test
-// console.log(solution("AB", 1));
-// console.log(solution("z", 1));
-// console.log(solution("a B z", 4));
+console.log(solution("AB", 1));
+console.log(solution("z", 1));
+console.log(solution("a B z", 4));
