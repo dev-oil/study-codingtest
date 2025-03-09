@@ -1,4 +1,5 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/181833
+import _ from 'lodash';
 
 // 💡 이차원 배열 만들기
 
@@ -10,10 +11,9 @@ function solution2(n: number): number[][] {
 }
 
 // refactor 함수형
+// lodash range 함수 와우
 function solution3(n: number): number[][] {
-  return [...Array(n)].map((_, i) =>
-    [...Array(n)].map((_, j) => (i === j ? 1 : 0))
-  );
+  return _.range(n).map((i) => _.range(n).map((j) => (i === j ? 1 : 0)));
 }
 
 // 첫번째 풀이
