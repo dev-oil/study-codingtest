@@ -1,25 +1,21 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/131705
 
-import _ from "lodash";
+import _ from 'lodash';
 
 // 💡 배열 조합 함수 만들기
 // 두번째 풀이 - 재귀함수 이용하여 풀이하기
 function combinations(arr: number[], n: number): number[][] {
-  const res: number[][] = [];
+  let res: number[][] = [];
 
   if (n === 1) {
     return arr.map((v) => [v]);
   }
 
-  arr.forEach((v, i, origin_arr) => {
-    const rest_arr = origin_arr.slice(i + 1);
-    const comb = combinations(rest_arr, n - 1);
-    const attach_arr = comb.map((comb_v) => [v, ...comb_v]);
-
-    res.push(...attach_arr);
-  });
-
-  return res;
+  return arr
+    .map((v, i) =>
+      combinations(arr.slice(i + 1), n - 1).map((comb) => [v, ...comb])
+    )
+    .flat();
 }
 
 function solution2(number: number[]): number {
@@ -37,8 +33,8 @@ function solution2(number: number[]): number {
 function solution(number: number[]): number {
   let count: number = 0;
 
-  for (let i = 0; i < number.length; i++) {
-    for (let j = i + 1; j < number.length; j++) {
+  for (let i = 0; i < number.length - 2; i++) {
+    for (let j = i + 1; j < number.length - 1; j++) {
       for (let k = j + 1; k < number.length; k++) {
         if (number[i] + number[j] + number[k] === 0) {
           count++;
