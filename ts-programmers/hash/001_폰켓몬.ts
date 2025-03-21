@@ -14,12 +14,13 @@ function solution2(nums: number[]): number {
   return Math.min(uniqueCount, max);
 }
 
+// 💡 set.size() 를 생각했어야 함니다
 // 첫번째 풀이 (Set도 내부적으로는 해시 구조를 이용하긴 함 ㅎ.ㅎ)
 function solution(nums: number[]): number {
   const max: number = nums.length / 2;
-  const arr: number[] = [...new Set(nums)];
+  const uniqs: number = new Set(nums).size;
 
-  return arr.length > max ? max : arr.length;
+  return Math.min(max, uniqs);
 }
 
 // test
