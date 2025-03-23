@@ -8,10 +8,9 @@ function solution2(n: number, words: string[]): number[] {
   for (const [i, v] of words.entries()) {
     if (i > 0) {
       const prevWord = words[i - 1];
-      const isValid =
-        prevWord[prevWord.length - 1] !== v[0] || usedWords.includes(v);
+      const isInvalid = prevWord.at(-1) !== v[0] || usedWords.includes(v); // 💡 Array.prototype.at() 메서드
 
-      if (isValid) {
+      if (isInvalid) {
         return [(i % n) + 1, Math.floor(i / n) + 1];
       }
     }
