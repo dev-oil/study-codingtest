@@ -6,23 +6,30 @@ import _ from 'lodash';
 // 두번째 풀이 - 재귀함수 이용하여 풀이하기
 // 배열a에서 n개를 뽑는방법은
 // 첫번째 것을 포함하는 경우랑 안포함하는 경우 두 개를 합친 것이다
-function combinations(arr: number[], n: number): number[][] {
+
+// 💡 제너레이터로 refactoring 하기
+// 제너레이터는 필요할 때마다 하나씩 값을 생성하여 반환하므로, 모든 조합을 한꺼번에 메모리에 담지 않아 메모리 부담이 적다.
+// 기존 방식은 모든 조합을 메모리에 저장하여 힙 메모리를 많이 사용하지만, 제너레이터는 순차적으로 생성하여 메모리 낭비를 줄인다.
+// 재귀 호출로 인해 스택 메모리는 사용하지만, 힙 메모리를 최소화하여 메모리 부족 문제를 방지할 수 있다.
+function* combinations(arr: number[], n: number): Iterable<number[]> {
   if (n === 0) {
-    return [[]];
+    yield [];
+    return;
   }
 
-  return arr.flatMap((v, i) =>
-    combinations(arr.slice(i + 1), n - 1).map((comb) => [v, ...comb])
-  );
+  for (let i = 0; i <= arr.length - n; i++) {
+    for (const comb of combinations(arr.slice(i + 1), n - 1)) {
+      yield [arr[i], ...comb];
+    }
+  }
 }
 
 function solution2(number: number[]): number {
-  const sortedArr = combinations(number, 3);
   let answer = 0;
 
-  sortedArr.forEach((v) => {
-    if (_.sum(v) === 0) answer++;
-  });
+  for (const comb of combinations(number, 3)) {
+    if (_.sum(comb) === 0) answer++;
+  }
 
   return answer;
 }
@@ -70,3 +77,7 @@ console.log(solution2([-2, 3, 0, 2, -5])); // 2
 //   ├── (2) + combinations([-2, 3, -3], 2)
 //   ├── (-2) + combinations([3, -3], 2)
 //   ├── (3) + combinations([-3], 2)
+
+// 함수 자체는 힙 메모리에 저장되며, 코드와 데이터가 함께 위치한다.
+// 함수 이름이나 참조 변수는 스택에 저장되어 함수 호출 시 힙에 있는 함수를 가리킨다.
+// 함수 호출 시 매개변수와 지역 변수는 스택에 저장되지만, 객체와 배열 같은 참조 타입은 힙에 저장된다.
