@@ -4,7 +4,7 @@ function solution(clothes: string[][]): number {
   const clothesMap: Map<string, number> = new Map();
 
   for (const [_, type] of clothes) {
-    clothesMap.set(type, (clothesMap.get(type) || 0) + 1);
+    clothesMap.set(type, (clothesMap.get(type) ?? 0) + 1);
   }
 
   let result = 1;
