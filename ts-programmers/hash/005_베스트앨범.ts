@@ -1,5 +1,42 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/42579?language=javascript
 
+// 두번째 풀이 - Map으로 한번에 데이터 관리하기
+function solution2(genres: string[], plays: number[]): number[] {
+  const genreMap = new Map<
+    string,
+    { total: number; songs: { index: number; play: number }[] }
+  >();
+
+  // 1. Map을 사용해 장르별로 노래 정보모으기
+  genres.forEach((genre, index) => {
+    const play = plays[index];
+    if (!genreMap.has(genre)) {
+      genreMap.set(genre, { total: 0, songs: [] });
+    }
+    const genreData = genreMap.get(genre)!;
+    genreData.total += play;
+    genreData.songs.push({ index, play });
+  });
+
+  // 2. 장르별로 노래를 재생 수와 인덱스 기준으로 정렬
+  const sortedGenres = [...genreMap.entries()].sort(
+    (a, b) => b[1].total - a[1].total
+  ); // 장르별 총 재생 수로 정렬
+
+  // 3. 결과 배열 만들기
+  const answer: number[] = [];
+  sortedGenres.forEach(([_, genreData]) => {
+    // 각 장르 안에서 노래를 재생 수 -> 인덱스 순으로 정렬
+    genreData.songs
+      .sort((a, b) => b.play - a.play || a.index - b.index) // 재생 수 내림차순, 인덱스 오름차순
+      .slice(0, 2) // 최대 두 개까지만
+      .forEach((song) => answer.push(song.index)); // 고유 번호(인덱스) 추가
+  });
+
+  return answer;
+}
+
+// 첫번째 풀이
 function solution(genres: string[], plays: number[]): number[] {
   const answer: number[] = [];
   const genresMap: Map<string, number> = new Map();
@@ -35,7 +72,7 @@ function solution(genres: string[], plays: number[]): number[] {
 
 // test
 console.log(
-  solution(
+  solution2(
     ['classic', 'pop', 'classic', 'classic', 'pop'],
     [500, 600, 150, 800, 2500]
   )
