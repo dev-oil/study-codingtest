@@ -27,8 +27,13 @@ function* combinations(arr: number[], n: number): Iterable<number[]> {
 function solution2(number: number[]): number {
   let answer = 0;
 
-  for (const comb of combinations(number, 3)) {
-    if (_.sum(comb) === 0) answer++;
+  const zeroSums = mapGenIter(
+    combinations(number, 3),
+    (comb) => _.sum(comb) === 0
+  );
+
+  for (const isZero of zeroSums) {
+    if (isZero) answer++;
   }
 
   return answer;

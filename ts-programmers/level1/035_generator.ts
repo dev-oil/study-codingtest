@@ -1,9 +1,20 @@
 // generator 버전 map / concat 만들기
 
 // mapGen
+// 일반 버전
 function* mapGen<T, U>(arr: T[], f: (x: T) => U): IterableIterator<U> {
   for (let i = 0; i < arr.length; i++) {
     yield f(arr[i]);
+  }
+}
+
+// iterator 버전
+function* mapGenIter<T, U>(
+  iter: Iterable<T>,
+  f: (x: T) => U
+): IterableIterator<U> {
+  for (const item of iter) {
+    yield f(item);
   }
 }
 
