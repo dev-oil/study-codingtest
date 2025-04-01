@@ -6,7 +6,7 @@ function solution2(a: number, b: number, n: number): number {
 
   const exchange = Math.floor(n / a) * b;
 
-  return exchange + solution2(a, b, exchange + (n % a));
+  return exchange + solution2(a, b, exchange + (n % a)); // 꼬리 재귀 (tail recursion) 버전 하단에 정리
 }
 
 // 첫번째 풀이 0.37ms
@@ -23,3 +23,21 @@ function solution(a: number, b: number, n: number): number {
 
 // test
 console.log(solution2(3, 1, 20));
+
+// tail recursion
+function solutionTail(
+  a: number,
+  b: number,
+  n: number,
+  acc: number = 0
+): number {
+  if (n < a) return acc;
+
+  const exchange = Math.floor(n / a) * b;
+  const next = exchange + (n % a);
+
+  return solutionTail(a, b, next, acc + exchange);
+}
+
+// test
+console.log(solutionTail(3, 1, 20));
