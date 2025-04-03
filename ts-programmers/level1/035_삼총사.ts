@@ -11,7 +11,14 @@ import _ from 'lodash';
 // 제너레이터는 필요할 때마다 하나씩 값을 생성하여 반환하므로, 모든 조합을 한꺼번에 메모리에 담지 않아 메모리 부담이 적다.
 // 기존 방식은 모든 조합을 메모리에 저장하여 힙 메모리를 많이 사용하지만, 제너레이터는 순차적으로 생성하여 메모리 낭비를 줄인다.
 // 재귀 호출로 인해 스택 메모리는 사용하지만, 힙 메모리를 최소화하여 메모리 부족 문제를 방지할 수 있다.
-function* combinations(arr: number[], n: number): Iterable<number[]> {
+
+// 💡 그럼 무조건 제너레이터 쓰는게 좋을까?
+// 배열과 제너레이터의 차이를 인터페이스 적으로 생각해보자
+// 제너레이터가 못하는 일? 중간의 값을 가져올 수 없다. 순회하여 순차적으로만 값을 가져올 수 있다.
+
+// 여기서는 순회만 하는 조건이기 때문에 제너레이터로 적용이 가능했다...
+
+function* combinationsGen(arr: number[], n: number): Iterable<number[]> {
   if (n === 0) {
     yield [];
     return;
@@ -24,11 +31,11 @@ function* combinations(arr: number[], n: number): Iterable<number[]> {
   }
 }
 
-function solution2(number: number[]): number {
+function solution3(number: number[]): number {
   let answer = 0;
 
   const zeroSums = mapGenIter(
-    combinations(number, 3),
+    combinationsGen(number, 3),
     (comb) => _.sum(comb) === 0
   );
 
@@ -38,6 +45,30 @@ function solution2(number: number[]): number {
 
   return answer;
 }
+
+// 일반 재귀 풀이
+function combinations(arr: number[], n: number): number[][] {
+  if (n === 0) {
+    return [[]];
+  }
+
+  return arr.flatMap((v, i) =>
+    combinations(arr.slice(i + 1), n - 1).map((comb) => [v, ...comb])
+  );
+}
+
+function solution2(number: number[]): number {
+  const sortedArr = combinations(number, 3);
+  let answer = 0;
+
+  sortedArr.forEach((v) => {
+    if (_.sum(v) === 0) answer++;
+  });
+
+  return answer;
+}
+
+console.log(solution2([-2, 3, 0, 2, -5])); // 2
 
 // 첫번째 풀이
 function solution(number: number[]): number {
@@ -58,8 +89,6 @@ function solution(number: number[]): number {
 // test
 // console.log(solution([-2, 3, 0, 2, -5])); // 2
 // console.log(solution([-3, -2, -1, 0, 1, 2, 3])); // 5
-
-console.log(solution2([-2, 3, 0, 2, -5])); // 2
 
 // 💡 Q. 메모리적으로 더 좋-은 이유?
 // A. 재귀 호출을 할 때마다 함수를 다시 호출하기 때문에 stack에 계속 함수 실행 컨텍스트가 쌓이게 된다.
