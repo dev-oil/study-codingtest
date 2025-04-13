@@ -18,18 +18,36 @@ import _ from 'lodash';
 
 // 여기서는 순회만 하는 조건이기 때문에 제너레이터로 적용이 가능했다...
 
+function* mapGenIter<T, U>(
+  iter: Iterable<T>,
+  f: (x: T) => U
+): IterableIterator<U> {
+  for (const item of iter) {
+    yield f(item);
+  }
+}
+
 function* combinationsGen(arr: number[], n: number): Iterable<number[]> {
   if (n === 0) {
     yield [];
     return;
   }
 
-  for (let i = 0; i <= arr.length - n; i++) {
-    for (const comb of combinations(arr.slice(i + 1), n - 1)) {
-      yield [arr[i], ...comb];
-    }
+  // 첫 원소 분리
+  const [first, ...rest] = arr;
+
+  // 1. 첫 원소 포함
+  for (const comb of combinations(rest, n - 1)) {
+    yield [first, ...comb];
+  }
+
+  // 2. 첫 원소 미포함
+  for (const comb of combinations(rest, n)) {
+    yield comb;
   }
 }
+
+console.log(solution3([-2, 3, 0, 2, -5])); // 2
 
 function solution3(number: number[]): number {
   let answer = 0;
