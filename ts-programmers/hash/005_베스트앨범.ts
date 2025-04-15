@@ -24,16 +24,13 @@ function solution2(genres: string[], plays: number[]): number[] {
   ); // 장르별 총 재생 수로 정렬
 
   // 3. 결과 배열 만들기
-  const answer: number[] = [];
-  sortedGenres.forEach(([_, genreData]) => {
-    // 각 장르 안에서 노래를 재생 수 -> 인덱스 순으로 정렬
+  return sortedGenres.flatMap(([_, genreData]) =>
     genreData.songs
-      .sort((a, b) => b.play - a.play || a.index - b.index) // 재생 수 내림차순, 인덱스 오름차순
-      .slice(0, 2) // 최대 두 개까지만
-      .forEach((song) => answer.push(song.index)); // 고유 번호(인덱스) 추가
-  });
-
-  return answer;
+      .slice()
+      .sort((a, b) => b.play - a.play || a.index - b.index)
+      .slice(0, 2)
+      .map((song) => song.index)
+  );
 }
 
 // 첫번째 풀이
@@ -42,7 +39,7 @@ function solution(genres: string[], plays: number[]): number[] {
   const genresMap: Map<string, number> = new Map();
   const pairedArr: [string, number][] = genres.map((v, i) => [v, plays[i]]); // 짝꿍들을 일단 만들어줬음
   const sortedArr: [string, number][] = [...pairedArr].sort(
-    (a, b) => b[1] - a[1]
+    ([_, a], [__, b]) => b - a
   ); // 그 중에 재생 많은 순서로 .. // sort 참조값이슈를 생각못해서 ...로 수정함
 
   // 해시 만들기
@@ -52,7 +49,7 @@ function solution(genres: string[], plays: number[]): number[] {
 
   // 해시 중에서 또 재생 순서대로~ 정렬해서 1순위 장르 뽑기
   const sortedMap = new Map(
-    [...genresMap.entries()].sort((a, b) => b[1] - a[1])
+    [...genresMap.entries()].sort(([_, a], [__, b]) => b - a)
   );
 
   // 이게 이제 sortedArr의 값과 key를 비교해서 pairedArr의 인덱스를 넣는 작업
