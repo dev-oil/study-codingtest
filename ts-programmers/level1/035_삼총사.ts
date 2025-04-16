@@ -37,14 +37,10 @@ function* combinationsGen(arr: number[], n: number): Iterable<number[]> {
   const [first, ...rest] = arr;
 
   // 1. 첫 원소 포함
-  for (const comb of combinations(rest, n - 1)) {
-    yield [first, ...comb];
-  }
+  yield* mapGenIter(combinationsGen(rest, n - 1), (comb) => [first, ...comb]);
 
   // 2. 첫 원소 미포함
-  for (const comb of combinations(rest, n)) {
-    yield comb;
-  }
+  yield* combinationsGen(rest, n);
 }
 
 console.log(solution3([-2, 3, 0, 2, -5])); // 2
