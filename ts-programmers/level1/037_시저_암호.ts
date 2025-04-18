@@ -3,13 +3,14 @@
 // 두번째 풀이
 // caesarCipher 함수 - 💡 modulo 연산, 정규표현식 이용 해서 리팩토링
 function caesarCipher(text: string, n: number): string {
-  return text.replace(/([a-z])|([A-Z])/g, (c, lowerCase) => {
-    // 콜백함수에 들어가는 인자 (match, group1, group2, ..., offset, originalString)
-    const startCode = lowerCase ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
-    return String.fromCharCode(
-      ((c.charCodeAt(0) - startCode + n) % 26) + startCode
-    );
-  });
+  if (text === ' ') return ' ';
+
+  const startCode =
+    text === text.toLowerCase() ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+
+  return String.fromCharCode(
+    ((text.charCodeAt(0) - startCode + n) % 26) + startCode
+  );
 }
 
 // solution 함수 - 커링 / 부분적용 / 일반
