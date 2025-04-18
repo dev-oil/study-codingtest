@@ -5,12 +5,10 @@
 function caesarCipher(text: string, n: number): string {
   if (text === ' ') return ' ';
 
-  const startCode =
+  const base =
     text === text.toLowerCase() ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
 
-  return String.fromCharCode(
-    ((text.charCodeAt(0) - startCode + n) % 26) + startCode
-  );
+  return String.fromCharCode(((text.charCodeAt(0) - base + n) % 26) + base);
 }
 
 // solution 함수 - 커링 / 부분적용 / 일반
