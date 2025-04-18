@@ -33,6 +33,8 @@ function* combinationsGen(arr: number[], n: number): Iterable<number[]> {
     return;
   }
 
+  if (arr.length < n) return;
+
   // 첫 원소 분리
   const [first, ...rest] = arr;
 

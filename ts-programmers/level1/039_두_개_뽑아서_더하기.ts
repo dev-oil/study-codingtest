@@ -2,6 +2,40 @@
 
 import _, { set } from 'lodash';
 
+// 제너레이터
+function* mapGenIter<T, U>(
+  iter: Iterable<T>,
+  f: (x: T) => U
+): IterableIterator<U> {
+  for (const item of iter) {
+    yield f(item);
+  }
+}
+
+function* combinationsGen(arr: number[], n: number): Iterable<number[]> {
+  if (n === 0) {
+    yield [];
+    return;
+  }
+
+  if (arr.length < n) return; // 이거 없으면 Maximum call stack size exceeded 에러 뜸
+
+  const [first, ...rest] = arr;
+
+  yield* mapGenIter(combinationsGen(rest, n - 1), (comb) => [first, ...comb]);
+  yield* combinationsGen(rest, n);
+}
+
+function solution3(numbers: number[]): number[] {
+  let answer: Set<number> = new Set();
+
+  for (const v of combinationsGen(numbers, 2)) {
+    answer.add(_.sum(v));
+  }
+
+  return [...answer].sort((a, b) => a - b);
+}
+
 // 일반 재귀
 function combinations(arr: number[], n: number): number[][] {
   if (n === 0) {
@@ -42,4 +76,5 @@ function solution(numbers: number[]): number[] {
 
 // test
 // console.log(solution([2, 1, 3, 4, 1]));
-console.log(solution2([2, 1, 3, 4, 1]));
+// console.log(solution2([2, 1, 3, 4, 1]));
+console.log(solution3([2, 1, 3, 4, 1]));
