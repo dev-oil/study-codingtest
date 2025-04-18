@@ -1,18 +1,15 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/12926
 
 // 두번째 풀이
-// caesarCipher 함수 - 💡 modulo 연산 이용 해서 리팩토링
+// caesarCipher 함수 - 💡 modulo 연산, 정규표현식 이용 해서 리팩토링
 function caesarCipher(text: string, n: number): string {
-  const lowerAlpha: string = 'abcdefghijklmnopqrstuvwxyz';
-  const upperAlpha: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-  if (text === ' ') return ' ';
-
-  const alpha: string = text.toLowerCase() === text ? lowerAlpha : upperAlpha;
-
-  const idx: number = alpha.indexOf(text); // 현재 문자 인덱스
-  const shifted: number = (idx + n) % alpha.length; // 밀어낸 후 인덱스, 범위 안으로 순환시킴
-  return alpha[shifted];
+  return text.replace(/([a-z])|([A-Z])/g, (c, lowerCase) => {
+    // 콜백함수에 들어가는 인자 (match, group1, group2, ..., offset, originalString)
+    const startCode = lowerCase ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+    return String.fromCharCode(
+      ((c.charCodeAt(0) - startCode + n) % 26) + startCode
+    );
+  });
 }
 
 // solution 함수 - 커링 / 부분적용 / 일반
