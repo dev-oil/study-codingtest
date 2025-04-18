@@ -1,18 +1,26 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/68644
 
-import _ from 'lodash';
+import _, { set } from 'lodash';
 
-// lodash - uniq 중복 배열 제거 선생님 써보기
-function solution2(numbers: number[]): number[] {
-  const result: number[] = [];
-
-  for (let i = 0; i < numbers.length; i++) {
-    for (let j = i + 1; j < numbers.length; j++) {
-      result.push(numbers[i] + numbers[j]);
-    }
+// 일반 재귀
+function combinations(arr: number[], n: number): number[][] {
+  if (n === 0) {
+    return [[]];
   }
+  return arr.flatMap((v, i) =>
+    combinations(arr.slice(i + 1), n - 1).map((comb) => [v, ...comb])
+  );
+}
 
-  return _.uniq(result).sort((a, b) => a - b);
+function solution2(numbers: number[]): number[] {
+  let answer: Set<number> = new Set();
+  const combiArr: number[][] = combinations(numbers, 2);
+
+  combiArr.forEach((v) => {
+    answer.add(_.sum(v));
+  });
+
+  return [...answer].sort((a, b) => a - b);
 }
 
 // 첫번째 풀이
@@ -33,5 +41,5 @@ function solution(numbers: number[]): number[] {
 }
 
 // test
-console.log(solution([2, 1, 3, 4, 1]));
+// console.log(solution([2, 1, 3, 4, 1]));
 console.log(solution2([2, 1, 3, 4, 1]));
