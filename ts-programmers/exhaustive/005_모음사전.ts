@@ -1,25 +1,27 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/84512
 
-function dictionary(
+function* dictionaryGen(
   current: string,
-  alphabet: string[],
-  result: string[]
-): void {
+  alphabet: string[]
+): Generator<string> {
   if (current.length > 5) return;
-  if (current.length > 0) result.push(current);
+  if (current.length > 0) yield current;
 
   for (const char of alphabet) {
-    dictionary(current + char, alphabet, result);
+    yield* dictionaryGen(current + char, alphabet);
   }
 }
 
 function solution(word: string): number {
-  const alphabet: string[] = ['A', 'E', 'I', 'O', 'U'];
-  const result: string[] = [];
+  const alphabet = ['A', 'E', 'I', 'O', 'U'];
+  let index = 0;
 
-  dictionary('', alphabet, result);
+  for (const generated of dictionaryGen('', alphabet)) {
+    index++;
+    if (generated === word) return index;
+  }
 
-  return result.indexOf(word) + 1;
+  return -1; // 단어 없을 경우 추가
 }
 
 // ├── A (1)
