@@ -15,14 +15,22 @@ function solution4(n: number): number {
 
 // 재귀 + 메모이제이션
 // 재귀 함수 안에서, 이미 계산한 값은 캐시에 저장해두고, 필요할 때 재사용하는 방식
-function count2(block: number, memo: number[] = []): number {
+const count2 = memoize((block: number): number => {
   if (block < 0) return 0;
   if (block === 0) return 1;
 
-  if (memo[block] !== undefined) return memo[block];
+  return (count2(block - 1) + count2(block - 2)) % 1234567;
+});
 
-  return (memo[block] =
-    (count2(block - 1, memo) + count2(block - 2, memo)) % 1234567);
+function memoize(f: (block: number) => number): (block: number) => number {
+  const memo: number[] = [];
+
+  return function (block: number): number {
+    if (memo[block] !== undefined) return memo[block];
+
+    memo[block] = f(block);
+    return memo[block];
+  };
 }
 
 function solution3(block: number): number {
@@ -71,5 +79,6 @@ function solution(block: number): number {
 }
 
 // test
+
 // console.log(solution2(4));
-console.log(solution4(4));
+console.log(solution3(4));
