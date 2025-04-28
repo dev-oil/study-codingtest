@@ -2,24 +2,37 @@
 {
   // 정답 카운트 함수
   function* cycle<T>(pattern: Iterable<T>): IterableIterator<T> {
+    yield* pattern;
+    yield* cycle(pattern);
+  }
+
+  function* zip<T1, T2>(
+    xs: Iterable<T1>,
+    ys: Iterable<T2>
+  ): IterableIterator<[T1, T2]> {
+    const it1 = xs[Symbol.iterator]();
+    const it2 = ys[Symbol.iterator]();
+
     while (true) {
-      for (const answer of pattern) {
-        yield answer;
-      }
+      const x = it1.next();
+      const y = it2.next();
+      if (x.done || y.done) return;
+      yield [x.value, y.value];
     }
   }
 
-  function countCorrectAnswers(answers: number[], pattern: number[]): number {
-    const gen = cycle(pattern);
+  function countCorrectAnswers(
+    answers: number[],
+    pattern: Iterable<number>
+  ): number {
     let count = 0;
 
-    for (let i = 0; i < answers.length; i++) {
-      const guess = gen.next().value; // 하나씩 꺼냄
-      if (answers[i] === guess) {
+    const zipped = zip(answers, pattern);
+    for (const [a, b] of zipped) {
+      if (a === b) {
         count++;
       }
     }
-
     return count;
   }
 
@@ -37,15 +50,12 @@
       .map(([i]) => i + 1);
   }
 
-  // 패턴
-  // 패턴별 점수
-  // 최고득점자
   function solution(answers: number[]): number[] {
     const patterns = [
       [1, 2, 3, 4, 5],
       [2, 1, 2, 3, 2, 4, 2, 5],
       [3, 3, 1, 1, 2, 2, 4, 4, 5, 5],
-    ];
+    ].map(cycle);
 
     const scores = patterns.map((pattern) =>
       countCorrectAnswers(answers, pattern)
@@ -54,9 +64,13 @@
     return getTopScorers([...scores.entries()]);
   }
 
+  // 패턴
+  // 패턴별 점수
+  // 최고득점자
+
   // test
-  console.log(solution([1, 2, 3, 4, 5]));
-  console.log(solution([1, 3, 2, 4, 2]));
+  console.log(solution([1, 2, 3, 4, 5])); // [1]
+  console.log(solution([1, 3, 2, 4, 2])); // [1, 2, 3]
 }
 
 // cycle([1,2,3]) == 1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,...
