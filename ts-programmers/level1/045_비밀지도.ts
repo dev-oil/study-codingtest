@@ -26,11 +26,11 @@
   };
 
   function solution(n: number, arr1: number[], arr2: number[]): string[] {
-    const changedArr1 = toBinary(arr1, n);
-    const changedArr2 = toBinary(arr2, n);
+    const arr1AsBinary = toBinary(arr1, n);
+    const arr2AsBinary = toBinary(arr2, n);
 
-    return changedArr1
-      .map((v, i) => [v, changedArr2[i]])
+    return arr1AsBinary
+      .map((v, i) => [v, arr2AsBinary[i]])
       .map(([v1, v2]) =>
         [...v1].map((t, i) => (t === '1' || v2[i] === '1' ? '#' : ' ')).join('')
       );
