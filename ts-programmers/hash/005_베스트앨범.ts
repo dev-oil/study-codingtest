@@ -44,7 +44,7 @@ function solution(genres: string[], plays: number[]): number[] {
 
   // 해시 만들기
   for (const [genre, playCount] of pairedArr) {
-    genresMap.set(genre, (genresMap.get(genre) || 0) + playCount);
+    genresMap.set(genre, (genresMap.get(genre) ?? 0) + playCount);
   }
 
   // 해시 중에서 또 재생 순서대로~ 정렬해서 1순위 장르 뽑기
@@ -54,13 +54,10 @@ function solution(genres: string[], plays: number[]): number[] {
 
   // 이게 이제 sortedArr의 값과 key를 비교해서 pairedArr의 인덱스를 넣는 작업
   for (const key of sortedMap.keys()) {
-    let count = 0;
-    for (let i = 0; i < sortedArr.length; i++) {
-      if (count === 2) break;
-      if (sortedArr[i][0] === key) {
-        answer.push(pairedArr.indexOf(sortedArr[i]));
-        count++;
-      }
+    const twoSongs = sortedArr.filter(([genre]) => genre === key).slice(0, 2);
+
+    for (const song of twoSongs) {
+      answer.push(pairedArr.indexOf(song));
     }
   }
 
