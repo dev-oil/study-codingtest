@@ -44,41 +44,49 @@
 사용자가 입력한 키값이 검색되지 않았을 경우 : “검색되지 않았습니다.”
  */
 
-// 해시 로직 구현 (배열로)
+// 해시 로직 구현 (배열로) - 오픈 어드레싱 방식 (슬롯당 하나만 저장, 충돌시 다음 칸 탐색)
 const TABLE_SIZE = 10;
-const hashTable: number[] = new Array(TABLE_SIZE).fill(0);
+const table: (number | null)[] = new Array(TABLE_SIZE).fill(null);
 
-// 해시 함수 (버킷 결정)
+// 해시 함수
 function hash(key: number): number {
-  return key % TABLE_SIZE; // key % TABLE_SIZE는 0부터 9까지의 정수 중 하나를 반환
-  // 이 값은 10개의 버킷 중 어느 버킷에 저장할지 결정하는 인덱스
+  return key % TABLE_SIZE;
 }
 
-// 값 삽입 함수
-function insertValue(table: number[], key: number): void {
-  const index = hash(key);
-  if (table[index] === 0) {
-    table[index] = key;
-  } else {
-    console.log(`버킷 ${index}는 이미 값이 있어 저장 불가: ${table[index]}`);
+// 삽입 함수 (충돌 시 선형 탐사)
+function insertValue(key: number): void {
+  let index = hash(key);
+  const start = index;
+
+  while (table[index] !== null) {
+    index = (index + 1) % TABLE_SIZE;
+    if (index === start) {
+      console.log(`저장 공간이 가득 찼습니다. 키 ${key}는 삽입할 수 없습니다.`);
+      return;
+    }
   }
+
+  table[index] = key;
 }
 
-// 값 검색 함수
-function findValue(table: number[], key: number): boolean {
-  const index = hash(key);
-  return table[index] === key;
+// 검색 함수 (선형 탐사로 찾기)
+function findValue(key: number): boolean {
+  let index = hash(key);
+  const start = index;
+
+  while (table[index] !== null) {
+    if (table[index] === key) return true;
+    index = (index + 1) % TABLE_SIZE;
+    if (index === start) break; // 무한 루프 방지
+  }
+
+  return false;
 }
 
-// test
+// 입력값 5개
 const inputKeys = [11, 22, 54, 396, 87];
+inputKeys.forEach((key) => insertValue(key));
 
-inputKeys.forEach((key) => insertValue(hashTable, key));
-
+// 검색 테스트
 const searchKey = 22;
-
-if (findValue(hashTable, searchKey)) {
-  console.log('검색되었습니다.');
-} else {
-  console.log('검색되지 않았습니다.');
-}
+console.log(findValue(searchKey) ? '검색되었습니다.' : '검색되지 않았습니다.');
