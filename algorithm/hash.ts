@@ -83,10 +83,44 @@ function findValue(key: number): boolean {
   return false;
 }
 
-// 입력값 5개
-const inputKeys = [11, 22, 54, 396, 87];
-inputKeys.forEach((key) => insertValue(key));
+// // 입력값 5개
+// const inputKeys = [11, 22, 54, 396, 87];
+// inputKeys.forEach((key) => insertValue(key));
 
-// 검색 테스트
-const searchKey = 22;
-console.log(findValue(searchKey) ? '검색되었습니다.' : '검색되지 않았습니다.');
+// // 검색 테스트
+// const searchKey = 22;
+// console.log(findValue(searchKey) ? '검색되었습니다.' : '검색되지 않았습니다.');
+
+// Map
+class HashStorage {
+  private table: Map<number, boolean>;
+
+  constructor() {
+    this.table = new Map<number, boolean>();
+  }
+
+  // 값 삽입
+  insertValue(key: number): void {
+    this.table.set(key, true);
+  }
+
+  // 값 검색
+  findValue(key: number): boolean {
+    return this.table.has(key);
+  }
+}
+
+const storage = new HashStorage();
+
+// 키값 5개 입력
+const inputKeysMap = [11, 22, 54, 396, 87];
+inputKeysMap.forEach((key) => storage.insertValue(key));
+
+// 검색
+const searchKeyMap = 22;
+
+if (storage.findValue(searchKeyMap)) {
+  console.log('검색되었습니다.');
+} else {
+  console.log('검색되지 않았습니다.');
+}
