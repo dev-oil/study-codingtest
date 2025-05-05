@@ -13,13 +13,28 @@ function caesarCipher(text: string, n: number): string {
 
 // solution 함수 - 커링 / 부분적용 / 일반
 // 커링 버전
-function curriedCaesarCipher(n: number): (text: string) => string {
-  return (text) => caesarCipher(text, n);
-}
+
+// 연산 중심 (operation-oriented)
+// "얼마나 밀지를 먼저 정하고" → "어떤 문자를 밀지" 결정
+// 여기서는 curriedCaesarCipher(n)을 먼저 고정해서 string => string 함수를 만들고 map()에 넘기기 때문에, 연산 중심 방식이 딱 맞음
+const curriedCaesarCipher = (n: number) => (text: string) =>
+  caesarCipher(text, n);
+// 얼만큼 밀까? 문자를 줘
+
+// 데이터 중심 (data-oriented)
+// "문자 먼저 정하고" → "얼마나 밀지를 나중에 결정"
+const curriedCaesarCipher2 = (text: string) => (n: number) =>
+  caesarCipher(text, n);
+// 문제 뭐야? 이거를 n만큼 밀게
+
+// operation oriented
+curriedCaesarCipher(7); // 문자를
+
+// data oriented
+curriedCaesarCipher2('a'); // n을
 
 function solution3(s: string, n: number): string {
-  const curriedN = curriedCaesarCipher(n);
-  return [...s].map(curriedN).join('');
+  return [...s].map(curriedCaesarCipher(n)).join('');
 }
 
 // 부분 적용 버전
@@ -30,7 +45,6 @@ const partialCaesar = (n: number) => (text: string) => caesarCipher(text, n);
 //     return caesarCipher(text, n);
 //   };
 // }
-
 function solution4(s: string, n: number): string {
   const partialN = partialCaesar(n);
   return [...s].map(partialN).join('');
