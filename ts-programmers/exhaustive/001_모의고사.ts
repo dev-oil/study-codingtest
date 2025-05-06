@@ -23,12 +23,11 @@
 
   function countCorrectAnswers(
     answers: number[],
-    pattern: Iterable<number>
+    myAnswers: Iterable<number>
   ): number {
     let count = 0;
 
-    const zipped = zip(answers, pattern);
-    for (const [a, b] of zipped) {
+    for (const [a, b] of zip(answers, myAnswers)) {
       if (a === b) {
         count++;
       }
@@ -50,16 +49,16 @@
       .map(([i]) => i + 1);
   }
 
-  function solution(answers: number[]): number[] {
+  function solution(realAnswers: number[]): number[] {
     const patterns = [
       [1, 2, 3, 4, 5],
       [2, 1, 2, 3, 2, 4, 2, 5],
       [3, 3, 1, 1, 2, 2, 4, 4, 5, 5],
-    ].map(cycle);
+    ];
 
-    const scores = patterns.map((pattern) =>
-      countCorrectAnswers(answers, pattern)
-    );
+    const scores = patterns
+      .map(cycle)
+      .map((myAnswers) => countCorrectAnswers(realAnswers, myAnswers));
 
     return getTopScorers([...scores.entries()]);
   }
