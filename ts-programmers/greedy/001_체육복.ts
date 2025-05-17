@@ -1,6 +1,51 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/42862
 
 {
+  // 세번째 풀이 배열 버전
+  function solution4(n: number, lost: number[], reserve: number[]): number {
+    let answer = 0;
+
+    const studentArr: number[][] = [];
+
+    for (let i = 0; i < n; i++) {
+      studentArr.push([i + 1, 1]);
+    }
+
+    // 잃은개수 빼기
+    for (const student of lost) {
+      const idx = studentArr.findIndex(([num]) => num === student);
+      if (idx !== -1) studentArr[idx][1] -= 1;
+    }
+
+    // 여유분 더하기
+    for (const student of reserve) {
+      const idx = studentArr.findIndex(([num]) => num === student);
+      if (idx !== -1) studentArr[idx][1] += 1;
+    }
+
+    for (let i = 0; i < studentArr.length; i++) {
+      const [, count] = studentArr[i];
+
+      if (count === 0) {
+        // 왼쪽 학생
+        if (i > 0 && studentArr[i - 1][1] === 2) {
+          studentArr[i - 1][1] -= 1;
+          studentArr[i][1] += 1;
+        }
+        // 오른쪽 학생
+        else if (i < n - 1 && studentArr[i + 1][1] === 2) {
+          studentArr[i + 1][1] -= 1;
+          studentArr[i][1] += 1;
+        }
+      }
+    }
+
+    return studentArr.filter(([, v]) => v >= 1).length;
+  }
+
+  // test
+  console.log(solution4(5, [2, 2, 2, 4], [1, 2, 3, 3, 5])); // 4
+
   // 세번째 풀이 - 여러 벌 도난 / 여러 벌 보유의 경우
   // ex) lost = [2, 2, 4] / reserve = [1, 2, 3, 3, 5]
 
@@ -19,6 +64,7 @@
     for (let i = 1; i <= n; i++) {
       studentMap.set(i, 1);
     }
+    console.log(studentMap);
 
     // 잃은개수 빼기
     for (const student of lost) {
@@ -51,7 +97,7 @@
   }
 
   // test
-  console.log(solution3(5, [2, 2, 4], [1, 2, 3, 3, 5])); // 5
+  // console.log(solution3(5, [2, 2, 4], [1, 2, 3, 3, 5])); // 5
 
   // 두번째 풀이
   function solution2(n: number, lost: number[], reserve: number[]): number {
