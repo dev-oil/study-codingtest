@@ -1,28 +1,33 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/42862
 
 {
-  // 세번째 풀이 배열 버전
+  // 세번째 풀이 Map + 배열 버전
   function solution4(n: number, lost: number[], reserve: number[]): number {
-    let answer = 0;
+    // 학생 기본 Map
+    const studentMap = new Map<number, number>();
 
-    const studentArr: number[][] = [];
-
-    for (let i = 0; i < n; i++) {
-      studentArr.push([i + 1, 1]);
+    // 모든 학생에게 체육복 1벌씩 주기
+    for (let i = 1; i <= n; i++) {
+      studentMap.set(i, 1);
     }
 
     // 잃은개수 빼기
     for (const student of lost) {
-      const idx = studentArr.findIndex(([num]) => num === student);
-      if (idx !== -1) studentArr[idx][1] -= 1;
+      studentMap.set(student, studentMap.get(student)! - 1);
     }
 
     // 여유분 더하기
     for (const student of reserve) {
-      const idx = studentArr.findIndex(([num]) => num === student);
-      if (idx !== -1) studentArr[idx][1] += 1;
+      studentMap.set(student, studentMap.get(student)! + 1);
     }
 
+    // 배열로 변환하여 순차 처리
+    const studentArr = Array.from({ length: n }, (_, i) => [
+      i + 1,
+      studentMap.get(i + 1)!,
+    ]);
+
+    // 체육복 없는 학생이 좌우에서 빌릴 수 있는지 확인
     for (let i = 0; i < studentArr.length; i++) {
       const [, count] = studentArr[i];
 
@@ -40,6 +45,7 @@
       }
     }
 
+    // 체육 수업 가능한 학생 수
     return studentArr.filter(([, v]) => v >= 1).length;
   }
 
