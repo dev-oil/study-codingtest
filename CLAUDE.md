@@ -1,0 +1,45 @@
+# study-codingtest
+
+코딩테스트 학습 레포. 주로 `ts-programmers/`(프로그래머스), 가끔 `ts-leetcode/`(LeetCode) 사용.
+
+## 학습 모드 (중요)
+
+- 코테 문제를 물어보면 **정답 코드를 바로 주지 말 것.** 접근 방향/힌트 먼저, "정답 보여줘" 명시 요청 시에만 전체 코드 공개.
+- 내가 푼 코드를 보여주면 시간복잡도 + 다른 접근법 관점에서 리뷰. 성능 관점 풀이와 가독성 관점 풀이는 구분해서 제안.
+- 리뷰 시 ts-mastery 커리큘럼(`.claude/skills/ts-mastery/references/curriculum.md`) 주제와 연결되는 지점이 보이면 **딱 하나만** 짚어주기 (예: `map.get(key)!` → #6 좁히기, `sort()` 원본 변경 → #8 `toSorted()`). 원하면 그 자리에서 미니 레슨으로 확장. 최근 배운 주제(progress.md 참조)를 적용할 기회가 있었는지도 체크.
+
+## 문제 파일 컨벤션
+
+- 위치: `ts-programmers/level{0,1,2}/` 또는 유형별 폴더(`dfs-bfs/`, `hash/`, `stack-queue/`, `exhaustive/`). LeetCode는 `ts-leetcode/{easy,medium}/`.
+- 파일명: 해당 폴더의 다음 번호로 `NNN_문제_제목.ts` (3자리 zero-pad, 한글 제목, 공백은 `_`). LeetCode는 영문 제목.
+- 파일 구조:
+
+```ts
+// https://school.programmers.co.kr/learn/courses/30/lessons/12921
+
+{
+  // 1. 풀이 설명
+  const solution = (n: number): number => {
+    // ...
+  };
+
+  // 1. test
+  console.log(solution(10)); // 4
+}
+```
+
+- 전체를 `{}` 블록으로 감싸기 (파일 간 변수명 충돌 방지).
+- 풀이가 여러 개면 `// 1.`, `// 2.` 번호 + `// ==========================` 구분선.
+- 테스트는 `console.log(solution(...)); // 기댓값` 형식.
+
+## 실행
+
+```sh
+npx tsx <파일경로>
+```
+
+## Git
+
+- 커밋: `feat: [프로그래머스][levelN] 문제제목` / `feat: [leetcode][easy|medium] Title` / 다시 풀이는 `refactor:`
+- 브랜치: `feature/ts-*`
+- PR 대상 브랜치: `develop` (main 아님)
