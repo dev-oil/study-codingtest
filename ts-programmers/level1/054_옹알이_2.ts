@@ -52,7 +52,7 @@
     let prev = '';
 
     while (rest !== '') {
-      const pron = PRONUNCIATIONS.find((p) => rest.startsWith(p) && p !== prev);
+      const pron = PRONUNCIATIONS.find((p) => p !== prev && rest.startsWith(p));
 
       if (pron === undefined) return false;
 
@@ -66,15 +66,20 @@
   // ==========================
   // 3. 재귀 FP 버전 — let/mutation 없이 .some() + 재귀로
   const canPronounceRec = (word: string, prev = ''): boolean => {
-    // TODO
-    return false;
+    if (word === '') return true;
+    
+    return PRONUNCIATIONS.some(
+      (p) => p !== prev && word.startsWith(p) && canPronounceRec(word.slice(p.length), p)
+    );
   };
 
   // ==========================
   // 4. 정규식 버전 — 정규식 테스트 2개 조합 (연속 반복 검사 + 완전 분해 검사)
   const canPronounceRegex = (word: string): boolean => {
-    // TODO
-    return false;
+    if (/(aya|ye|woo|ma)\1/.test(word)) return false; // 연속 반복 검사
+    if (!/^(aya|ye|woo|ma)+$/.test(word)) return false; // 완전 분해 검사
+
+    return true;
   };
 
   // ==========================
