@@ -3,41 +3,30 @@
   
   // 제한: discount 최대 100,000 → O(n log n)까지 허용. 창마다 want(최대 10개) 확인이면 약 10⁶이라 통과한다.
   // 설계:
-  // 각 want 와 number 값을 객체로 만든다. e.g. const whatIWant: Record<string, number> = {banana: 3, apple: 2}
-  // discount 배열을 0부터 9까지 / 1부터 10까지 / 2부터 11까지 ... 각 섹션을 잘라서 해당 자른 배열을 discount.length - 10값 까지 for문으로 돌면서 해당하는 whatIWant 객체 키 값이 나오면 그 키 값의 value 값에 -1 해준다. 만약 전체 value 값이 0과 같거나 0보다 작으면 answer++ 추가해준다.
-  // discount.length - 10 값까지 비교 완료되면 반복문 종료하고 answer값을 return 한다.
+  // 창 시작 인덱스 배열을 만든다. e.g. [0, 1, 2, ...] (개수는 discount.length - (DAY - 1))
+  // 각 시작 인덱스마다 discount를 10개씩 잘라서 창의 개수표 객체를 만든다. e.g. {chicken: 1, apple: 3, ...} (없는 키 읽기는 undefined라 ?? 0으로 처리한다)
+  // want의 모든 품목이 개수표에서 원하는 개수 이상이면(every) 그 창은 통과다. filter로 거르고 남은 length가 답이다.
   // 엣지: discount 길이가 딱 10이면 창은 1개다.
   
-  // [ 1차 풀이 ] ==========================================
-  const solution = (want: string[], number: number[], discount: string[]): number => {
+  const solution = (want: readonly string[], number: readonly number[], discount: readonly string[]): number => { 
     const DAY = 10;
 
-    const whatIWant: Record<string, number> = {};
-    let answer = 0;
+    const startIndex = Array.from({ length: discount.length - (DAY - 1) }, (_, i) => i);
 
-    for (const [i, element] of want.entries()) { // 이거 idiom 찾아보기
-      whatIWant[element] = number[i];
-    }
-
-    for (let i = 0; i <= discount.length - DAY; i++) {
-      const copyWhatIWant = { ...whatIWant };
+    return startIndex.filter((i) => {
       const discountDay = discount.slice(i, i + DAY);
+      const discountWindowObj: Record<string, number> = {}
 
       for (const element of discountDay) {
-        copyWhatIWant[element] -= 1;
+        discountWindowObj[element] = (discountWindowObj[element] ?? 0) + 1; // 첫 키에서는 undefined (처음 나올 때 키가 아직 없다)
       }
-      
-      if (Math.max(...Object.values(copyWhatIWant)) <= 0) {
-        answer++;
-      }
-    }
 
-    return answer;
-  };
+      return want.every(((item, wantIdx) => (discountWindowObj[item] ?? 0) >= number[wantIdx]))
+    }).length;
+  }
 
   // test
   console.log(solution(["banana", "apple", "rice", "pork", "pot"], [3, 2, 2, 2, 1], ["chicken", "apple", "apple", "banana", "rice", "apple", "pork", "banana", "pork", "rice", "pot", "banana", "apple", "banana"])); // 3
-  console.log(solution(["apple"], [10], ["banana", "banana", "banana", "banana", "banana", "banana", "banana", "banana", "banana", "banana"])); // 0 
-
+  console.log(solution(["apple"], [10], ["banana", "banana", "banana", "banana", "banana", "banana", "banana", "banana", "banana", "banana"])); // 0
 
 }
