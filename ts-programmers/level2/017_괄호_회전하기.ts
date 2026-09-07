@@ -12,6 +12,11 @@
   // 7. 닫는 괄호고 stack 끝 값이 해당 닫는 괄호의 짝(여는 괄호)이라면 stack 끝 값을 pop 한다.
   // 8. 둘 다 아니라면 그 즉시 유효하지 않으므로 false 값을 리턴한다.
   // 9. for 문 확인 이후 전체 stack에 남아 있는 값이 없다면 true, 그렇지 않다면 false. ("[[" 같은 케이스 대응)
+  //
+  // 학습 메모 (ts-mastery #6 — 좁히기):
+  // - stack.at(-1)의 타입은 string | undefined (빈 배열일 수 있으므로).
+  // - 좁히기는 호출 표현식이 아니라 "변수(이름)"에 붙는다 → const last에 담아 !== undefined로 좁힌다.
+  // - `!` 단언은 컴파일 타임 주장일 뿐 런타임 보호가 아님 — 증명 가능할 때만 쓰고, 좁히기가 우선.
 
   const pairGroup: Record<string, string> = { '[': ']' , '(' : ')', '{' : '}' };
 
@@ -19,9 +24,11 @@
     const stack: string[] = [];
 
     for (const element of chars) {
+      const last = stack.at(-1);
+
       if (element in pairGroup) {
         stack.push(element);
-      } else if (pairGroup[stack.at(-1)!] === element) {
+      } else if (last !== undefined && pairGroup[last] === element) {
         stack.pop();
       } else {
         return false;
