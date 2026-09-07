@@ -1,44 +1,38 @@
 {
   // https://school.programmers.co.kr/learn/courses/30/lessons/76502
 
-  // 제한: s 길이 1 ~ 1,000 → O(n²) OK
+  // 제한: s 길이 1 ~ 1,000 → O(n²) OK (회전 n번 × 검사 n글자)
   // 설계 :
-  // 1. count 변수를 만든다.
-  // 2. 괄호 배열을 만든다. circleArray = [...s] (for 문 바깥에서)
-  // 3. s.length 만큼 for 문을 만든다 (x=0 상태 포함).
-  // 4. for 문 내) 멀쩡한 괄호인지 확인하기 위한 배열(스택)을 만든다. stack = []
-  // 5. for 문을 한번 더 내부에서 돌리면서 괄호를 판별하는 로직을 진행한다. 여는 괄호는 stack에 push, 닫는 괄호가 들어오면 stack 마지막이 같은 종류의 여는 괄호일 때만 pop, 아니면 이 회전은 실패. (뎁스마다 새 Array 만들 필요 없음 — 마지막 요소 비교가 중첩을 알아서 처리함)
-  // 6. 끝까지 실패 없고 stack이 비어 있으면 count++;
-  // 7. circleArray.push(circleArray.shift()); 로 circleArray를 업데이트 해준다.
-  // 8. 계속 반복 후 최종 count 값을 반환함!
+  // 1. 문자열을 스프레드로 펼쳐 배열로 만든다. [...s]
+  // 2. 만들어진 배열 개수대로 filter를 돌린다 (글자는 버리고 인덱스 i만 사용).
+  // 3. 문자열이 유효한 값인지 확인하는 함수 isValid를 만든다.
+  // 4. 매 i마다 s.slice(i) + s.slice(0, i) 로 왼쪽 i칸 회전 문자열을 새로 만들어 isValid에 넣는다 (원본 업데이트 아님 — slice는 매번 새 문자열).
+  // 5. isValid는 stack 방식을 사용한다. stack = [] 빈 배열을 만들어준다.
+  // 6. 문자열의 요소 하나하나를 돌면서 여는 괄호라면(pairGroup에 키가 있으면) push 해준다.
+  // 7. 닫는 괄호고 stack 끝 값이 해당 닫는 괄호의 짝(여는 괄호)이라면 stack 끝 값을 pop 한다.
+  // 8. 둘 다 아니라면 그 즉시 유효하지 않으므로 false 값을 리턴한다.
+  // 9. for 문 확인 이후 전체 stack에 남아 있는 값이 없다면 true, 그렇지 않다면 false. ("[[" 같은 케이스 대응)
 
-  const pair: Record<string, string> = { ']': '[' , ')' : '(', '}' : '{' };
+  const pairGroup: Record<string, string> = { '[': ']' , '(' : ')', '{' : '}' };
 
-  const solution = (s: string): number => {
-    let count: number = 0;
-    const circleArray = [...s];
+  const isValid = (chars: string): boolean => {
+    const stack: string[] = [];
 
-    for (let index = 0; index < s.length; index++) {
-      const stack: string[] = [];
-      
-      for (const element of circleArray) {
-        if (['[', '{', '('].includes(element)) {
-          stack.push(element);
-        } else {
-          if (stack.at(-1) === pair[element]) {
-            stack.pop();
-          } else {
-            stack.push(element)
-          }
-        }
+    for (const element of chars) {
+      if (element in pairGroup) {
+        stack.push(element);
+      } else if (pairGroup[stack.at(-1)!] === element) {
+        stack.pop();
+      } else {
+        return false;
       }
-
-      if (stack.length === 0) count++;
-      circleArray.push(circleArray.shift()!);
     }
 
-    return count;
-  }
+    return stack.length === 0;
+  };
+
+  const solution = (s: string): number =>
+    [...s].filter((_, i) => isValid(s.slice(i) + s.slice(0, i))).length;
 
   // test
   console.log(solution("[](){}")); // 3
